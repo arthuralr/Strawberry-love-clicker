@@ -1,9 +1,13 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { db } from '@/lib/firebase';
+import { ref, onValue, set } from 'firebase/database';
 
 const STAGES = [
   { id: 1, name: "Plantar a Semente", baseClicks: 10, emoji: "🌱", emojiSize: "text-7xl" },
@@ -40,10 +44,44 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [floatingEmojis, setFloatingEmojis] = useState<{id: number, emoji: string}[]>([]);
   const [orbitingStrawberries, setOrbitingStrawberries] = useState<number[]>([]);
+  const [username, setUsername] = useState<string | null>(null);
+  
+  const router = useRouter();
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    const storedUsername = localStorage.getItem('username');
+    if (!storedUsername) {
+      router.push('/login');
+    } else {
+      setUsername(storedUsername);
+      setIsClient(true);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (username) {
+      const userRef = ref(db, 'users/' + username);
+      onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          setStock(data.stock || 0);
+          setStage(data.stage || 1);
+          setClicks(data.clicks || 0);
+        }
+      });
+    }
+  }, [username]);
+
+  useEffect(() => {
+    if (username) {
+      set(ref(db, 'users/' + username), {
+        stock,
+        stage,
+        clicks
+      });
+    }
+  }, [stock, stage, clicks, username]);
+
 
   useEffect(() => {
     if (stock > 0) {
@@ -51,11 +89,11 @@ export default function Home() {
     }
   }, [stock]);
 
-  const currentStageInfo = useMemo(() => STAGES[stage - 1], [stage]);
+  const currentStageInfo = useMemo(() => STAGES[stage - 1] || STAGES[0], [stage]);
   const difficultyMultiplier = useMemo(() => Math.pow(2, stock), [stock]);
   
   const clicksNeeded = useMemo(() => {
-    return currentStageInfo.baseClicks * difficultyMultiplier;
+    return (currentStageInfo.baseClicks || 10) * difficultyMultiplier;
   }, [currentStageInfo, difficultyMultiplier]);
   
   const progressPercentage = useMemo(() => {
@@ -83,6 +121,11 @@ export default function Home() {
     setAnimate(true);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('username');
+    router.push('/login');
+  };
+
   useEffect(() => {
     if (animate) {
       const timer = setTimeout(() => setAnimate(false), 150);
@@ -90,7 +133,7 @@ export default function Home() {
     }
   }, [animate]);
   
-  if (!isClient) {
+  if (!isClient || !username) {
     return <GameSkeleton />;
   }
 
@@ -133,10 +176,11 @@ export default function Home() {
       ))}
       
       <Card className="w-full max-w-md shadow-2xl border-2 border-primary/20 bg-card/90 backdrop-blur-sm animate-fade-in-down z-10">
-        <CardHeader className="text-center pb-4">
+        <CardHeader className="text-center pb-4 relative">
           <CardTitle className="text-5xl font-headline font-bold text-primary tracking-tight" style={{ fontFamily: "'Patrick Hand', cursive" }}>
             Fábrica de Morango do Amor
           </CardTitle>
+           <Button onClick={handleLogout} variant="ghost" className="absolute top-4 right-4 text-xs">Sair</Button>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8 pt-4">
           <div className="w-full space-y-2 text-center">
