@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['PT Sans', 'sans-serif'],
-        headline: ['PT Sans', 'sans-serif'],
+        body: ['Roboto', 'sans-serif'],
+        headline: ['Patrick Hand', 'cursive'],
         code: ['monospace'],
       },
       colors: {
@@ -88,10 +88,26 @@ export default {
             height: '0',
           },
         },
+        'fade-in-down': {
+          '0%': { opacity: '0', transform: 'translateY(-20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-out-up': {
+           '0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+           '100%': { opacity: '0', transform: 'translateY(-150px) scale(0.5)' },
+        },
+        'thump': {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.2)' },
+          '100%': { transform: 'scale(1)' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-in-down': 'fade-in-down 0.5s ease-out forwards',
+        'fade-out-up': 'fade-out-up 3s ease-in forwards',
+        'thump': 'thump 0.2s ease-in-out',
       },
     },
   },

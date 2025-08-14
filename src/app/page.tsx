@@ -38,6 +38,7 @@ export default function Home() {
   const [clicks, setClicks] = useState(0);
   const [animate, setAnimate] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [floatingEmojis, setFloatingEmojis] = useState<{id: number, emoji: string}[]>([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -64,6 +65,8 @@ export default function Home() {
         setStock(prev => prev + 1);
         setStage(1);
         setClicks(0);
+        const newEmojis = Array.from({length: 5}, (_, i) => ({id: Date.now() + i, emoji: '💖'}));
+        setFloatingEmojis(prev => [...prev, ...newEmojis]);
       }
     }
   }, [clicks, clicksNeeded, stage, isClient]);
@@ -88,10 +91,29 @@ export default function Home() {
   const emojiColorClass = stage === 2 ? 'grayscale' : 'grayscale-0';
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-background font-body p-4 transition-colors duration-500">
-      <Card className="w-full max-w-md shadow-2xl border-2 border-primary/10 bg-card/90 backdrop-blur-sm">
+    <main className="relative flex items-center justify-center min-h-screen bg-background font-body p-4 transition-colors duration-500 overflow-hidden"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FBCFE8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          }}>
+
+      {floatingEmojis.map(item => (
+        <div
+          key={item.id}
+          className="absolute text-2xl animate-fade-out-up"
+          style={{
+            left: `${Math.random() * 90 + 5}%`,
+            top: `${Math.random() * 20 + 70}%`,
+            animationDelay: `${Math.random() * 2}s`,
+          }}
+          onAnimationEnd={() => setFloatingEmojis(prev => prev.filter(e => e.id !== item.id))}
+        >
+          {item.emoji}
+        </div>
+      ))}
+      
+      <Card className="w-full max-w-md shadow-2xl border-2 border-primary/20 bg-card/90 backdrop-blur-sm animate-fade-in-down">
         <CardHeader className="text-center pb-4">
-          <CardTitle className="text-4xl font-headline font-bold text-primary tracking-tight">
+          <CardTitle className="text-5xl font-headline font-bold text-primary tracking-tight" style={{ fontFamily: "'Patrick Hand', cursive" }}>
             Fábrica de Morango do Amor
           </CardTitle>
         </CardHeader>
@@ -107,7 +129,7 @@ export default function Home() {
             className={`w-48 h-48 rounded-full bg-background hover:bg-accent/20 border-4 border-primary/20 shadow-lg transition-all duration-150 ease-in-out hover:shadow-primary/20 active:scale-105 ${animate ? 'scale-110 border-primary/50' : 'scale-100'}`}
             aria-label={`Clicar para progredir na etapa: ${currentStageInfo.name}`}
           >
-            <span className={`${emojiSize} transition-all duration-300 ${emojiColorClass}`}>{emoji}</span>
+            <span className={`${emojiSize} transition-all duration-300 ${animate ? 'animate-thump' : ''} ${emojiColorClass}`}>{emoji}</span>
           </Button>
 
           <div className="w-full text-center space-y-2">
