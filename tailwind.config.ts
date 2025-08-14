@@ -100,6 +100,11 @@ export default {
           '0%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.2)' },
           '100%': { transform: 'scale(1)' },
+        },
+        'orbit': {
+          '0%': { transform: 'rotate(0deg) translateX(calc(min(45vw, 400px))) rotate(0deg) scale(0.8)', opacity: '0.8' },
+          '50%': { transform: 'rotate(180deg) translateX(calc(min(45vw, 400px))) rotate(-180deg) scale(1.2)', opacity: '1' },
+          '100%': { transform: 'rotate(360deg) translateX(calc(min(45vw, 400px))) rotate(-360deg) scale(0.8)', opacity: '0.8' },
         }
       },
       animation: {
@@ -108,6 +113,7 @@ export default {
         'fade-in-down': 'fade-in-down 0.5s ease-out forwards',
         'fade-out-up': 'fade-out-up 3s ease-in forwards',
         'thump': 'thump 0.2s ease-in-out',
+        'orbit': 'orbit 15s linear infinite',
       },
     },
   },

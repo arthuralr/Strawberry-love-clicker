@@ -39,10 +39,17 @@ export default function Home() {
   const [animate, setAnimate] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [floatingEmojis, setFloatingEmojis] = useState<{id: number, emoji: string}[]>([]);
+  const [orbitingStrawberries, setOrbitingStrawberries] = useState<number[]>([]);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (stock > 0) {
+      setOrbitingStrawberries(Array.from({ length: Math.min(stock, 20) }, (_, i) => i)); // Limite de 20 para não sobrecarregar
+    }
+  }, [stock]);
 
   const currentStageInfo = useMemo(() => STAGES[stage - 1], [stage]);
   const difficultyMultiplier = useMemo(() => Math.pow(2, stock), [stock]);
@@ -95,6 +102,21 @@ export default function Home() {
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FBCFE8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
           }}>
+      
+      {orbitingStrawberries.map((index) => (
+        <div
+          key={`orbit-${index}`}
+          className="absolute text-4xl"
+          style={{
+            animation: `orbit 15s linear infinite`,
+            animationDelay: `${index * -0.75}s`,
+            transformOrigin: 'center center'
+          }}
+        >
+          🍓
+        </div>
+      ))}
+
 
       {floatingEmojis.map(item => (
         <div
@@ -111,7 +133,7 @@ export default function Home() {
         </div>
       ))}
       
-      <Card className="w-full max-w-md shadow-2xl border-2 border-primary/20 bg-card/90 backdrop-blur-sm animate-fade-in-down">
+      <Card className="w-full max-w-md shadow-2xl border-2 border-primary/20 bg-card/90 backdrop-blur-sm animate-fade-in-down z-10">
         <CardHeader className="text-center pb-4">
           <CardTitle className="text-5xl font-headline font-bold text-primary tracking-tight" style={{ fontFamily: "'Patrick Hand', cursive" }}>
             Fábrica de Morango do Amor
