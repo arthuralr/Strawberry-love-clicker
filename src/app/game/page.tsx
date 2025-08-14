@@ -211,7 +211,8 @@ export default function GamePage() {
                 Progresso: {new Intl.NumberFormat('pt-BR').format(clicks)} / {new Intl.NumberFormat('pt-BR').format(clicksNeeded)} cliques
              </p>
           </div>
-           <Button onClick={() => router.push('/ranking')} variant="link" className="text-primary">
+           <Button onClick={() => router.push('/ranking')} className="mt-4">
+            <span role="img" aria-label="Mundo" className="mr-2 text-xl">🌎</span>
             Ranking Mundial
           </Button>
         </CardContent>
@@ -219,3 +220,5 @@ export default function GamePage() {
     </main>
   );
 }
+
+    
