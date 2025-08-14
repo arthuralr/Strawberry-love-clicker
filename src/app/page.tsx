@@ -106,9 +106,8 @@ export default function Home() {
       {orbitingStrawberries.map((index) => (
         <div
           key={`orbit-${index}`}
-          className="absolute text-4xl"
+          className="absolute text-4xl animate-orbit"
           style={{
-            animation: `orbit 15s linear infinite`,
             animationDelay: `${index * -0.75}s`,
             transformOrigin: 'center center'
           }}
