@@ -120,7 +120,7 @@ export default function GamePage() {
         setFloatingEmojis(prev => [...prev, ...newEmojis]);
       }
     }
-  }, [clicks, clicksNeeded, stage, stock, isClient]);
+  }, [clicks, clicksNeeded, stage, stock, isClient, saveData]);
 
   const handleMainClick = () => {
     const newClicks = clicks + 1;
@@ -211,10 +211,11 @@ export default function GamePage() {
                 Progresso: {new Intl.NumberFormat('pt-BR').format(clicks)} / {new Intl.NumberFormat('pt-BR').format(clicksNeeded)} cliques
              </p>
           </div>
+           <Button onClick={() => router.push('/ranking')} variant="link" className="text-primary">
+            Ranking Mundial
+          </Button>
         </CardContent>
       </Card>
     </main>
   );
 }
-
-    
