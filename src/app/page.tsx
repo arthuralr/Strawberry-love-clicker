@@ -4,12 +4,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Leaf, Carrot, Sparkles } from 'lucide-react';
 
 const STAGES = [
-  { id: 1, name: "Plantar e Cultivar o Morango", baseClicks: 10, Icon: Leaf, iconClassName: "text-secondary-foreground" },
-  { id: 2, name: "Adicionar a Cobertura Base", baseClicks: 15, Icon: Carrot, iconClassName: "text-primary" },
-  { id: 3, name: "Adicionar a Cobertura Vermelha Final", baseClicks: 20, Icon: Sparkles, iconClassName: "text-accent" },
+  { id: 1, name: "Plantar a Semente", baseClicks: 10, emoji: "🌱", emojiSize: "text-7xl" },
+  { id: 2, name: "Morango Verde", baseClicks: 15, emoji: "🍓", emojiSize: "text-7xl" },
+  { id: 3, name: "Morango Maduro", baseClicks: 20, emoji: "🍓", emojiSize: "text-8xl" },
 ];
 
 function GameSkeleton() {
@@ -85,7 +84,8 @@ export default function Home() {
     return <GameSkeleton />;
   }
 
-  const { Icon, iconClassName } = currentStageInfo;
+  const { emoji, emojiSize } = currentStageInfo;
+  const emojiColorClass = stage === 2 ? 'grayscale' : 'grayscale-0';
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-background font-body p-4 transition-colors duration-500">
@@ -107,7 +107,7 @@ export default function Home() {
             className={`w-48 h-48 rounded-full bg-background hover:bg-accent/20 border-4 border-primary/20 shadow-lg transition-all duration-150 ease-in-out hover:shadow-primary/20 active:scale-105 ${animate ? 'scale-110 border-primary/50' : 'scale-100'}`}
             aria-label={`Clicar para progredir na etapa: ${currentStageInfo.name}`}
           >
-            <Icon className={`w-24 h-24 transition-colors duration-300 ${iconClassName}`} />
+            <span className={`${emojiSize} transition-all duration-300 ${emojiColorClass}`}>{emoji}</span>
           </Button>
 
           <div className="w-full text-center space-y-2">
