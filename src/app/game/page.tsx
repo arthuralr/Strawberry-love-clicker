@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
-import { ref, onValue, set, get } from 'firebase/database';
+import { ref, onValue, set, get, update } from 'firebase/database';
 
 const STAGES = [
   { id: 1, name: "Plantar a Semente", baseClicks: 10, emoji: "🌱", emojiSize: "text-7xl" },
@@ -67,32 +67,21 @@ export default function GamePage() {
           setStock(data.stock || 0);
           setStage(data.stage || 1);
           setClicks(data.clicks || 0);
+        } else {
+            // Se não houver dados, inicialize no banco de dados
+            set(userRef, { stock: 0, stage: 1, clicks: 0 });
         }
       });
       return () => unsubscribe();
     }
   }, [username]);
 
-  useEffect(() => {
-    if (username && isClient) {
+  const saveData = (data: { stock?: number; stage?: number; clicks?: number }) => {
+    if (username) {
       const userRef = ref(db, 'users/' + username);
-      // We only want to write if the local state is ahead of the database
-      // This check is simplistic and can be improved with versioning or timestamps
-      get(userRef).then(snapshot => {
-        const dbData = snapshot.val();
-        if (!dbData || dbData.stock !== stock || dbData.stage !== stage || dbData.clicks !== clicks) {
-           set(ref(db, 'users/' + username + '/'), {
-            // we have to spread the password to not overwrite it
-            ...(dbData || {}),
-            stock,
-            stage,
-            clicks
-          });
-        }
-      })
+      update(userRef, data);
     }
-  }, [stock, stage, clicks, username, isClient]);
-
+  };
 
   useEffect(() => {
     if (stock > 0) {
@@ -103,10 +92,10 @@ export default function GamePage() {
   }, [stock]);
 
   const currentStageInfo = useMemo(() => STAGES[stage - 1] || STAGES[0], [stage]);
-  const difficultyMultiplier = useMemo(() => Math.pow(2, stock), [stock]);
+  const difficultyMultiplier = useMemo(() => Math.pow(1.5, stock), [stock]);
   
   const clicksNeeded = useMemo(() => {
-    return (currentStageInfo.baseClicks || 10) * difficultyMultiplier;
+    return Math.floor((currentStageInfo.baseClicks || 10) * difficultyMultiplier);
   }, [currentStageInfo, difficultyMultiplier]);
   
   const progressPercentage = useMemo(() => {
@@ -117,20 +106,26 @@ export default function GamePage() {
   useEffect(() => {
     if (isClient && clicksNeeded > 0 && clicks >= clicksNeeded) {
       if (stage < STAGES.length) {
-        setStage(prev => prev + 1);
+        const nextStage = stage + 1;
+        setStage(nextStage);
         setClicks(0);
+        saveData({ stage: nextStage, clicks: 0 });
       } else {
-        setStock(prev => prev + 1);
+        const newStock = stock + 1;
+        setStock(newStock);
         setStage(1);
         setClicks(0);
+        saveData({ stock: newStock, stage: 1, clicks: 0 });
         const newEmojis = Array.from({length: 5}, (_, i) => ({id: Date.now() + i, emoji: '💖'}));
         setFloatingEmojis(prev => [...prev, ...newEmojis]);
       }
     }
-  }, [clicks, clicksNeeded, stage, isClient]);
+  }, [clicks, clicksNeeded, stage, stock, isClient]);
 
   const handleMainClick = () => {
-    setClicks(prev => prev + 1);
+    const newClicks = clicks + 1;
+    setClicks(newClicks);
+    saveData({ clicks: newClicks });
     setAnimate(true);
   };
 
@@ -222,3 +217,4 @@ export default function GamePage() {
   );
 }
 
+    
