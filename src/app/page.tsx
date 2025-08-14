@@ -61,7 +61,7 @@ export default function Home() {
   useEffect(() => {
     if (username) {
       const userRef = ref(db, 'users/' + username);
-      onValue(userRef, (snapshot) => {
+      const unsubscribe = onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
           setStock(data.stock || 0);
@@ -69,23 +69,36 @@ export default function Home() {
           setClicks(data.clicks || 0);
         }
       });
+      return () => unsubscribe();
     }
   }, [username]);
 
   useEffect(() => {
-    if (username) {
-      set(ref(db, 'users/' + username), {
-        stock,
-        stage,
-        clicks
-      });
+    if (username && isClient) {
+      const userRef = ref(db, 'users/' + username);
+      // We only want to write if the local state is ahead of the database
+      // This check is simplistic and can be improved with versioning or timestamps
+      get(userRef).then(snapshot => {
+        const dbData = snapshot.val();
+        if (!dbData || dbData.stock !== stock || dbData.stage !== stage || dbData.clicks !== clicks) {
+           set(ref(db, 'users/' + username + '/'), {
+            // we have to spread the password to not overwrite it
+            ...(dbData || {}),
+            stock,
+            stage,
+            clicks
+          });
+        }
+      })
     }
-  }, [stock, stage, clicks, username]);
+  }, [stock, stage, clicks, username, isClient]);
 
 
   useEffect(() => {
     if (stock > 0) {
       setOrbitingStrawberries(Array.from({ length: Math.min(stock, 20) }, (_, i) => i)); // Limite de 20 para não sobrecarregar
+    } else {
+      setOrbitingStrawberries([]);
     }
   }, [stock]);
 
