@@ -74,7 +74,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-2xl border-2 border-primary/20 bg-card/90 backdrop-blur-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-4xl font-headline font-bold text-primary" style={{ fontFamily: "'Patrick Hand', cursive" }}>
-            Bem-vindo ao Strawberry Love Clicker
+            Bem-vindo ao Strawberry Love Clicker!
           </CardTitle>
         </CardHeader>
         <CardContent>
