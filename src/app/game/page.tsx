@@ -206,7 +206,7 @@ export default function GamePage() {
               background: `conic-gradient(hsl(var(--accent)) ${progressPercentage}%, hsl(var(--muted)) ${progressPercentage}%)`,
             }}
           >
-            <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
+            <div className="w-full h-full rounded-full bg-background flex items-center justify-center border-2 border-primary/50">
               <Button
                 onClick={handleMainClick}
                 variant="ghost"
