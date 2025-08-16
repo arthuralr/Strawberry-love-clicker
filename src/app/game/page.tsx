@@ -8,6 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
 import { ref, onValue, set, get, update } from 'firebase/database';
+import { LogOut, Globe } from 'lucide-react';
 
 const STAGES = [
   { id: 1, name: "Plantar a Semente", baseClicks: 10, emoji: "🌱", emojiSize: "text-7xl" },
@@ -120,7 +121,7 @@ export default function GamePage() {
         setFloatingEmojis(prev => [...prev, ...newEmojis]);
       }
     }
-  }, [clicks, clicksNeeded, stage, stock, isClient]);
+  }, [clicks, clicksNeeded, stage, stock, isClient, saveData]);
 
   const handleMainClick = () => {
     const newClicks = clicks + 1;
@@ -188,7 +189,10 @@ export default function GamePage() {
           <CardTitle className="text-5xl font-headline font-bold text-primary tracking-tight" style={{ fontFamily: "'Patrick Hand', cursive" }}>
             Fábrica de Morango do Amor
           </CardTitle>
-           <Button onClick={handleLogout} variant="ghost" className="absolute top-4 right-4 text-xs">Sair</Button>
+           <Button onClick={handleLogout} variant="ghost" size="icon" className="absolute top-2 right-2 text-muted-foreground hover:text-primary">
+            <LogOut size={20} />
+            <span className="sr-only">Sair</span>
+           </Button>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8 pt-4">
           <div className="w-full space-y-2 text-center">
@@ -197,19 +201,21 @@ export default function GamePage() {
           </div>
 
           <div
-            className="relative w-48 h-48 rounded-full flex items-center justify-center transition-all duration-300"
+            className="relative w-48 h-48 rounded-full flex items-center justify-center p-2"
             style={{
               background: `conic-gradient(hsl(var(--accent)) ${progressPercentage}%, hsl(var(--muted)) ${progressPercentage}%)`,
             }}
           >
-            <Button
-              onClick={handleMainClick}
-              variant="outline"
-              className={`w-[170px] h-[170px] rounded-full bg-background hover:bg-accent/20 border-4 border-primary/20 shadow-lg transition-all duration-150 ease-in-out hover:shadow-primary/20 active:scale-105 ${animate ? 'scale-110 border-primary/50' : 'scale-100'}`}
-              aria-label={`Clicar para progredir na etapa: ${currentStageInfo.name}`}
-            >
-              <span className={`${emojiSize} transition-all duration-300 ${animate ? 'animate-thump' : ''} ${emojiColorClass}`}>{emoji}</span>
-            </Button>
+            <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
+              <Button
+                onClick={handleMainClick}
+                variant="ghost"
+                className={`w-full h-full rounded-full bg-transparent hover:bg-accent/10 shadow-inner transition-all duration-150 ease-in-out active:scale-105 ${animate ? 'scale-110' : 'scale-100'}`}
+                aria-label={`Clicar para progredir na etapa: ${currentStageInfo.name}`}
+              >
+                <span className={`${emojiSize} transition-all duration-300 ${animate ? 'animate-thump' : ''} ${emojiColorClass}`}>{emoji}</span>
+              </Button>
+            </div>
           </div>
           
 
@@ -220,7 +226,7 @@ export default function GamePage() {
              </p>
           </div>
            <Button onClick={() => router.push('/ranking')} className="mt-4">
-            <span role="img" aria-label="Mundo" className="mr-2 text-xl">🌎</span>
+            <Globe className="mr-2"/>
             Ranking Mundial
           </Button>
         </CardContent>
@@ -228,7 +234,5 @@ export default function GamePage() {
     </main>
   );
 }
-
-    
 
     
