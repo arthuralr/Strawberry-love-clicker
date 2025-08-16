@@ -13,6 +13,7 @@ import { Crown, Star, Medal } from 'lucide-react';
 interface User {
   username: string;
   stock: number;
+  createdAt?: string;
 }
 
 function RankingSkeleton() {
@@ -26,6 +27,7 @@ function RankingSkeleton() {
               <div className="h-6 w-6 bg-muted rounded"></div>
               <div className="h-6 bg-muted rounded w-24"></div>
             </div>
+             <div className="h-6 bg-muted rounded w-20"></div>
             <div className="h-6 bg-muted rounded w-12"></div>
           </div>
         ))}
@@ -47,7 +49,8 @@ export default function RankingPage() {
       if (data) {
         const userList: User[] = Object.keys(data).map(key => ({
           username: key,
-          stock: data[key].stock || 0
+          stock: data[key].stock || 0,
+          createdAt: data[key].createdAt
         }));
         // Firebase RTDB ordena em ordem crescente, então revertemos para ter o maior primeiro
         setUsers(userList.sort((a, b) => b.stock - a.stock));
@@ -71,6 +74,26 @@ export default function RankingPage() {
     }
   };
 
+  const getGameTime = (createdAt?: string) => {
+    if (!createdAt) {
+      return "Usuário Beta";
+    }
+    const creationDate = new Date(createdAt);
+    const now = new Date();
+    const diffMs = now.getTime() - creationDate.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    
+    if (diffHours < 1) {
+       const diffMinutes = Math.floor(diffMs / (1000 * 60));
+       return `${diffMinutes}m`;
+    }
+    if (diffHours < 24) {
+      return `${diffHours}h`;
+    }
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d`;
+  }
+
   return (
     <main className="flex items-center justify-center min-h-screen bg-background font-body p-4"
           style={{
@@ -92,6 +115,7 @@ export default function RankingPage() {
                   <TableRow>
                     <TableHead className="w-[80px]">Rank</TableHead>
                     <TableHead>Usuário</TableHead>
+                    <TableHead>Tempo de Jogo</TableHead>
                     <TableHead className="text-right">Morangos Prontos</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -100,6 +124,7 @@ export default function RankingPage() {
                     <TableRow key={user.username} className={index < 3 ? 'font-bold' : ''}>
                       <TableCell className="flex items-center justify-center h-14">{getRankIcon(index)}</TableCell>
                       <TableCell>{user.username}</TableCell>
+                      <TableCell className="text-muted-foreground">{getGameTime(user.createdAt)}</TableCell>
                       <TableCell className="text-right text-lg">{new Intl.NumberFormat('pt-BR').format(user.stock)} 🍓</TableCell>
                     </TableRow>
                   ))}
