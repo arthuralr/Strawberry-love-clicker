@@ -46,6 +46,7 @@ export default function GamePage() {
   const [floatingEmojis, setFloatingEmojis] = useState<{id: number, emoji: string}[]>([]);
   const [orbitingStrawberries, setOrbitingStrawberries] = useState<number[]>([]);
   const [username, setUsername] = useState<string | null>(null);
+  const [joinDateInfo, setJoinDateInfo] = useState<string | null>(null);
   
   const router = useRouter();
 
@@ -68,6 +69,15 @@ export default function GamePage() {
           setStock(data.stock || 0);
           setStage(data.stage || 1);
           setClicks(data.clicks || 0);
+           if (data.createdAt) {
+            const creationDate = new Date(data.createdAt);
+            const today = new Date();
+            const diffTime = Math.abs(today.getTime() - creationDate.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            setJoinDateInfo(`Jogando há ${diffDays} dia${diffDays !== 1 ? 's' : ''}`);
+          } else {
+            setJoinDateInfo("Usuário Beta");
+          }
         } else {
             // Se não houver dados, inicialize no banco de dados
             set(userRef, { stock: 0, stage: 1, clicks: 0 });
@@ -198,15 +208,16 @@ export default function GamePage() {
           <div className="w-full space-y-2 text-center">
               <p className="text-lg font-semibold text-foreground">Etapa Atual: {currentStageInfo.name}</p>
               <p className="text-base text-foreground">Morangos do Amor Prontos: <span className="font-bold text-primary">{stock}</span></p>
+              {joinDateInfo && <p className="text-sm text-muted-foreground">{joinDateInfo}</p>}
           </div>
 
           <div
-            className="relative w-48 h-48 rounded-full flex items-center justify-center p-1 border border-[hsl(var(--accent))]"
+            className="relative w-48 h-48 rounded-full flex items-center justify-center p-1 border-[2px] border-[hsl(var(--accent))]"
             style={{
               background: `conic-gradient(hsl(var(--primary)) ${progressPercentage}%, hsl(var(--muted)) ${progressPercentage}%)`,
             }}
           >
-            <div className="w-full h-full rounded-full bg-background flex items-center justify-center border border-[hsl(var(--accent))]">
+            <div className="w-full h-full rounded-full bg-background flex items-center justify-center border-[2px] border-[hsl(var(--accent))]">
               <Button
                 onClick={handleMainClick}
                 variant="ghost"

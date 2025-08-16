@@ -60,7 +60,8 @@ export default function LoginPage() {
         password: signupPassword,
         stock: 0,
         stage: 1,
-        clicks: 0
+        clicks: 0,
+        createdAt: new Date().toISOString(),
       });
       toast({ title: "Sucesso!", description: "Conta criada com sucesso. Faça o login." });
     }
