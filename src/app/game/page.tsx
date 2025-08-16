@@ -201,12 +201,12 @@ export default function GamePage() {
           </div>
 
           <div
-            className="relative w-48 h-48 rounded-full flex items-center justify-center p-1 border border-primary/50"
+            className="relative w-48 h-48 rounded-full flex items-center justify-center p-1 border border-[hsl(var(--accent))]"
             style={{
-              background: `conic-gradient(hsl(var(--accent)) ${progressPercentage}%, hsl(var(--muted)) ${progressPercentage}%)`,
+              background: `conic-gradient(hsl(var(--primary)) ${progressPercentage}%, hsl(var(--muted)) ${progressPercentage}%)`,
             }}
           >
-            <div className="w-full h-full rounded-full bg-background flex items-center justify-center border border-primary/50">
+            <div className="w-full h-full rounded-full bg-background flex items-center justify-center border border-[hsl(var(--accent))]">
               <Button
                 onClick={handleMainClick}
                 variant="ghost"
