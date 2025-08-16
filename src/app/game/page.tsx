@@ -120,7 +120,7 @@ export default function GamePage() {
         setFloatingEmojis(prev => [...prev, ...newEmojis]);
       }
     }
-  }, [clicks, clicksNeeded, stage, stock, isClient, saveData]);
+  }, [clicks, clicksNeeded, stage, stock, isClient]);
 
   const handleMainClick = () => {
     const newClicks = clicks + 1;
@@ -196,14 +196,22 @@ export default function GamePage() {
               <p className="text-base text-foreground">Morangos do Amor Prontos: <span className="font-bold text-primary">{stock}</span></p>
           </div>
 
-          <Button
-            onClick={handleMainClick}
-            variant="outline"
-            className={`w-48 h-48 rounded-full bg-background hover:bg-accent/20 border-4 border-primary/20 shadow-lg transition-all duration-150 ease-in-out hover:shadow-primary/20 active:scale-105 ${animate ? 'scale-110 border-primary/50' : 'scale-100'}`}
-            aria-label={`Clicar para progredir na etapa: ${currentStageInfo.name}`}
+          <div
+            className="relative w-48 h-48 rounded-full flex items-center justify-center transition-all duration-300"
+            style={{
+              background: `conic-gradient(hsl(var(--accent)) ${progressPercentage}%, hsl(var(--muted)) ${progressPercentage}%)`,
+            }}
           >
-            <span className={`${emojiSize} transition-all duration-300 ${animate ? 'animate-thump' : ''} ${emojiColorClass}`}>{emoji}</span>
-          </Button>
+            <Button
+              onClick={handleMainClick}
+              variant="outline"
+              className={`w-[170px] h-[170px] rounded-full bg-background hover:bg-accent/20 border-4 border-primary/20 shadow-lg transition-all duration-150 ease-in-out hover:shadow-primary/20 active:scale-105 ${animate ? 'scale-110 border-primary/50' : 'scale-100'}`}
+              aria-label={`Clicar para progredir na etapa: ${currentStageInfo.name}`}
+            >
+              <span className={`${emojiSize} transition-all duration-300 ${animate ? 'animate-thump' : ''} ${emojiColorClass}`}>{emoji}</span>
+            </Button>
+          </div>
+          
 
           <div className="w-full text-center space-y-2">
              <Progress value={progressPercentage} className="h-4" />
@@ -220,5 +228,7 @@ export default function GamePage() {
     </main>
   );
 }
+
+    
 
     
