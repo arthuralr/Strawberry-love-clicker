@@ -92,7 +92,7 @@ export default function GamePage() {
   }, [stock]);
 
   const currentStageInfo = useMemo(() => STAGES[stage - 1] || STAGES[0], [stage]);
-  const difficultyMultiplier = useMemo(() => Math.pow(1.5, stock), [stock]);
+  const difficultyMultiplier = useMemo(() => Math.pow(1.1, stock), [stock]);
   
   const clicksNeeded = useMemo(() => {
     return Math.floor((currentStageInfo.baseClicks || 10) * difficultyMultiplier);
