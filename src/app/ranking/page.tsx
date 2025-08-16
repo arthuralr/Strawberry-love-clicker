@@ -115,7 +115,7 @@ export default function RankingPage() {
                   <TableRow>
                     <TableHead className="w-[80px]">Rank</TableHead>
                     <TableHead>Usuário</TableHead>
-                    <TableHead>Tempo de Jogo</TableHead>
+                    <TableHead>Conta Criada Há</TableHead>
                     <TableHead className="text-right">Morangos Prontos</TableHead>
                   </TableRow>
                 </TableHeader>
