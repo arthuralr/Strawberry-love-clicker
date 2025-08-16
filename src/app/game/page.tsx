@@ -201,7 +201,7 @@ export default function GamePage() {
           </div>
 
           <div
-            className="relative w-48 h-48 rounded-full flex items-center justify-center p-2"
+            className="relative w-48 h-48 rounded-full flex items-center justify-center p-2 border-2 border-primary/50"
             style={{
               background: `conic-gradient(hsl(var(--accent)) ${progressPercentage}%, hsl(var(--muted)) ${progressPercentage}%)`,
             }}
@@ -234,5 +234,3 @@ export default function GamePage() {
     </main>
   );
 }
-
-    
